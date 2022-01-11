@@ -1,56 +1,59 @@
-import React from "react";
-import { Layout, Menu, Breadcrumb } from "antd";
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from "icons";
+import React, { useState } from "react";
+import { Layout, Menu } from "antd";
+import {
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
+import { useAuthContext } from "../../shared/contexts/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+
 const { SubMenu } = Menu;
-const { Content, Sider } = Layout;
+const { Sider } = Layout;
 function SideBar() {
+  const navigate = useNavigate();
+
+  const [collapsed, setCollapsed] = useState(false);
+
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const { loggedUser, logoutUser } = useAuthContext();
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/auth");
+  };
+
   return (
-    <Layout>
-      <Sider width={200} className="site-layout-background">
-        <Menu
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
-          style={{ height: "100%", borderRight: 0 }}
+    <Sider collapsible collapsed={collapsed} onCollapse={toggleCollapsed}>
+      <div className="logo">{loggedUser?.userType}</div>
+      <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+        <Menu.Item key="2" icon={<TeamOutlined />}>
+          <Link to="/patients">Patient Management</Link>
+        </Menu.Item>
+
+        <SubMenu key="sub1" icon={<UserOutlined />} title="Reports">
+          <Menu.Item key="3">
+            <Link to="/reports">Communicable Disease Cases</Link>
+          </Menu.Item>
+        </SubMenu>
+        <Menu.Item key="4" icon={<TeamOutlined />}>
+          <Link to="/exports">Exports</Link>
+        </Menu.Item>
+        <Menu.Item
+          key="5"
+          icon={<LogoutOutlined color="white" />}
+          style={{ backgroundColor: "#D11A2A ", marginTop: "5%" }}
+          color="white"
+          onClick={handleLogout}
         >
-          <SubMenu key="sub1" icon={<UserOutlined />} title="subnav 1">
-            <Menu.Item key="1">option1</Menu.Item>
-            <Menu.Item key="2">option2</Menu.Item>
-            <Menu.Item key="3">option3</Menu.Item>
-            <Menu.Item key="4">option4</Menu.Item>
-          </SubMenu>
-          <SubMenu key="sub2" icon={<LaptopOutlined />} title="subnav 2">
-            <Menu.Item key="5">option5</Menu.Item>
-            <Menu.Item key="6">option6</Menu.Item>
-            <Menu.Item key="7">option7</Menu.Item>
-            <Menu.Item key="8">option8</Menu.Item>
-          </SubMenu>
-          <SubMenu key="sub3" icon={<NotificationOutlined />} title="subnav 3">
-            <Menu.Item key="9">option9</Menu.Item>
-            <Menu.Item key="10">option10</Menu.Item>
-            <Menu.Item key="11">option11</Menu.Item>
-            <Menu.Item key="12">option12</Menu.Item>
-          </SubMenu>
-        </Menu>
-      </Sider>
-      <Layout style={{ padding: "0 24px 24px" }}>
-        <Breadcrumb style={{ margin: "16px 0" }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
-        <Content
-          className="site-layout-background"
-          style={{
-            padding: 24,
-            margin: 0,
-            minHeight: 280,
-          }}
-        >
-          Content
-        </Content>
-      </Layout>
-    </Layout>
+          Logout
+        </Menu.Item>
+      </Menu>
+    </Sider>
   );
 }
 

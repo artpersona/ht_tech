@@ -3,10 +3,11 @@ import "./styles.css";
 import { useAuthContext } from "../../../shared/contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   // Context
-  const { registerUser, loginWithEmail } = useAuthContext();
+  const { registerUser, loginWithEmail, loggedUser } = useAuthContext();
   //  Refs
   const containerRef = useRef(null);
   const registEye = useRef(null);
@@ -21,9 +22,16 @@ function Login() {
   console.log(errors);
   // State
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (loggedUser) navigate("/patients");
+  }, [loggedUser]);
+
   const [registPasswordType, setRegistPasswordType] = useState("password");
   const [loginPasswordType, setLoginPasswordType] = useState("password");
   const [userType, setUserType] = useState("local-center");
+  const [site, setSite] = useState("matina");
 
   const displayLogin = () => {
     containerRef.current.classList.add("sign-up-mode");
@@ -48,7 +56,7 @@ function Login() {
 
   const handleUserRegistration = (data) => {
     const { email, password } = data;
-    registerUser(email, password, userType)
+    registerUser(email, password, userType, site)
       .then(() => {
         console.log("accont creation success");
       })
@@ -148,6 +156,23 @@ function Login() {
                 <option value="city-center">City Health Center</option>
               </select>
             </div>
+
+            {userType === "local-center" && (
+              <div className="input-field">
+                <i className="fas fa-house" />
+                <select
+                  placeholder="Select Community Site"
+                  className="bg-color"
+                  onChange={(event) => setSite(event.target.value)}
+                  required
+                >
+                  <option value="matina">Matina</option>
+                  <option value="maa">Maa</option>
+                  <option value="catalunan">Catalunan</option>
+                </select>
+              </div>
+            )}
+
             <div className="input-field">
               <i className="fas fa-envelope" />
               <input

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/auth";
+import "firebase/compat/storage";
 import firebaseConfig from "../configs/firebase";
 firebase.initializeApp(firebaseConfig);
 const FirebaseContext = createContext();
@@ -10,7 +11,7 @@ const FirebaseContext = createContext();
 const FirebaseProvider = ({ children }) => {
   const auth = firebase.auth();
   const firestore = firebase.firestore();
-
+  const storage = firebase.storage();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const FirebaseProvider = ({ children }) => {
       });
   };
 
-  const payload = { firestore, auth, firebase, users };
+  const payload = { firestore, auth, firebase, users, storage };
   return (
     <FirebaseContext.Provider value={payload}>
       {children}

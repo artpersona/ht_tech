@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Login, Home } from "../pages";
+import { Login, Reports, Settings, PatientManagement, Exports } from "../pages";
 import { useAuthContext } from "../shared/contexts/AuthContext";
 function index() {
   return <MainNavigation />;
@@ -15,18 +15,21 @@ const MainNavigation = () => {
         exact
         path="/"
         element={
-          loggedUser ? <Navigate to="/dashboard" /> : <Navigate to="/auth" />
+          loggedUser ? <Navigate to="/patients" /> : <Navigate to="/auth" />
         }
       ></Route>
       <Route path="/auth" element={<Login />} />
+
       <Route
-        path="/dashboard"
+        path="/patients"
         element={
           <PrivateRoute redirectTo={"/auth"}>
-            <Home />
+            <PatientManagement />
           </PrivateRoute>
         }
       />
+      <Route path="/reports" element={<Reports />} />
+      <Route path="/exports" element={<Exports />} />
       <Route path="*" element={<Navigate to="/auth" />} />
     </Routes>
   );

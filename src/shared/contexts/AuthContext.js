@@ -34,7 +34,7 @@ const AuthProvider = ({ children }) => {
         .onSnapshot((doc) => {
           if (doc?.docs.length > 0) {
             setLoggedUser(doc.docs[0].data());
-            navigate("/dashboard");
+            if (window.location.pathname === "/") navigate("/patients");
           } else {
             reject("Invalid Credentials");
           }
@@ -68,12 +68,12 @@ const AuthProvider = ({ children }) => {
     });
   };
 
-  const registerUser = (email, password, userType) => {
+  const registerUser = (email, password, userType, site) => {
     return new Promise((resolve, reject) => {
       auth
         .createUserWithEmailAndPassword(email, password)
         .then((user) => {
-          createProfile(email, userType)
+          createProfile(email, userType, site)
             .then(() => {
               resolve(user);
             })
@@ -85,7 +85,7 @@ const AuthProvider = ({ children }) => {
     });
   };
 
-  const createProfile = (email, userType) => {
+  const createProfile = (email, userType, site) => {
     return new Promise((resolve, reject) => {
       firestore
         .collection("Users")
@@ -93,6 +93,7 @@ const AuthProvider = ({ children }) => {
         .set({
           email: email.trim(),
           userType: userType,
+          site: site,
         })
         .then(() => {
           resolve();
